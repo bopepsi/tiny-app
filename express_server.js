@@ -4,7 +4,9 @@ const app = express();
 const port = 8080;
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname,'views'));
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.urlencoded({ extended: false }));
 
 const urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
@@ -22,7 +24,19 @@ app.get("/urls.json", (req, res) => {
 app.get('/urls', (req, res) => {
     const tempVars = { urls: urlDatabase };
     res.render('urls_index', tempVars);
+});
+
+app.post('/urls', (req, res) => {
+    const longURL = req.body.longURL;
+    console.log(longURL);
+    let str = generateRandomString();
+    res.send(`${str}`);
+
 })
+
+app.get("/urls/new", (req, res) => {
+    res.render("urls_new");
+});
 
 app.get('/urls/:shortURL', (req, res) => {
     const id = req.params.shortURL;
@@ -35,6 +49,25 @@ app.get('/urls/:shortURL', (req, res) => {
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+
+function generateRandomString() {
+    let arr = [];
+    let ans = '';
+    for (let i = 65; i <= 90; i++) {
+        arr.push(String.fromCharCode(i));
+    };
+    for (let i = 97; i <= 122; i++) {
+        arr.push(String.fromCharCode(i));
+    };
+    for (let i = 48; i <= 57; i++) {
+        arr.push(String.fromCharCode(i));
+    };
+    for (let i = 0; i < 6; i++) {
+        let charIdx = Math.floor(Math.random() * arr.length);
+        ans += arr[charIdx];
+    };
+    return ans;
+}
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}!`);
