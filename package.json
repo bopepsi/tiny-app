@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/bopepsi/tiny-app/issues"
   },
-  "homepage": "https://github.com/bopepsi/tiny-app#readme"
+  "homepage": "https://github.com/bopepsi/tiny-app#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
