@@ -14,7 +14,7 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
-    res.send("Hello!");
+    res.redirect('/urls');
 });
 
 app.get("/urls.json", (req, res) => {
@@ -39,7 +39,9 @@ app.post('/urls', (req, res) => {
     urlDatabase[`${str}`] = longURL;
     res.redirect(`urls/${str}`);
 
-})
+});
+
+
 
 app.get("/urls/new", (req, res) => {
     res.render("urls_new");
@@ -52,6 +54,11 @@ app.get('/urls/:shortURL', (req, res) => {
     console.log(tempVars);
     res.render('urls_show', tempVars);
 });
+
+app.post('/urls/:shortURL', (req, res) => {
+    urlDatabase[req.params.shortURL] = req.body.newURL;
+    res.redirect('/');
+})
 
 app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL];
