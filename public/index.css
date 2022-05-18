@@ -1,0 +1,24 @@
+.err-msg{
+    color: grey;
+    text-align: center;
+    margin-block-start: 5rem;
+}
+
+button{
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: whitesmoke;
+    border-color: gray;
+}
+button:hover{
+    color: white;
+    background-color: gray;
+}
+button:focus{
+    outline: none;
+}
+
+.my-width{
+    width: 50%;
+    margin: 0 auto;
+}

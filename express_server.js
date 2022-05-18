@@ -15,16 +15,14 @@ const port = 8080;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 //todo set cookies into res.locals
-
-console.log(users);
-
 app.use((req, res, next) => {
     if (req.cookies['username'] !== '' || !req.cookies['username']) {
         res.locals.username = req.cookies['username'];
-        console.log(res.locals['username']);
     };
     if (req.cookies['user_id'] !== '' || !req.cookies['user_id']) {
         for (let key in users) {
@@ -32,7 +30,6 @@ app.use((req, res, next) => {
                 res.locals.useremail = users[key]['email'];
             };
         }
-        console.log(res.locals['username'], res.locals['useremail']);
     }
     next();
 })
@@ -51,9 +48,19 @@ app.get('/register', (req, res) => {
     res.render('user_registration');
 })
 
-app.post('/register', (req, res) => {
+app.post('/register', (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+    if (!email || !password) {
+        return res.redirect('/400');
+    };
+    for (var key in users) {
+        console.log('infor', users[key])
+        if (users[key]['email'] === email) {
+            console.log('matches email')
+            return res.redirect('/400');
+        }
+    };
     let userId = generateRandomString();
     users[userId] = {};
     users[userId]['id'] = userId;
@@ -73,7 +80,7 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    res.cookie('user_id', '');
+    res.clearCookie('user_id');
     res.redirect('/');
 })
 
@@ -119,6 +126,12 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+
+app.get('/400', (req, res) => {
+    res.status(400).render('400');
+})
+
+console.log(users);
 
 //todo generate unique id
 function generateRandomString() {
