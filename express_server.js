@@ -1,3 +1,11 @@
+const urlDatabase = {
+    "b2xVn2": "http://www.lighthouselabs.ca",
+    "9sm5xK": "http://www.google.com",
+};
+
+const users = {
+};
+
 const express = require('express');
 var cookieParser = require('cookie-parser')
 const path = require('path')
@@ -9,11 +17,27 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//todo set cookies into res.locals
 
-const urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com",
-};
+console.log(users);
+
+app.use((req, res, next) => {
+    if (req.cookies['username'] !== '' || !req.cookies['username']) {
+        res.locals.username = req.cookies['username'];
+        console.log(res.locals['username']);
+    };
+    if (req.cookies['user_id'] !== '' || !req.cookies['user_id']) {
+        for (let key in users) {
+            if (key === req.cookies['user_id']) {
+                res.locals.useremail = users[key]['email'];
+            };
+        }
+        console.log(res.locals['username'], res.locals['useremail']);
+    }
+    next();
+})
+
+
 
 app.get("/", (req, res) => {
     res.redirect('/urls');
@@ -23,14 +47,33 @@ app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
 });
 
+app.get('/register', (req, res) => {
+    res.render('user_registration');
+})
+
+app.post('/register', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    let userId = generateRandomString();
+    users[userId] = {};
+    users[userId]['id'] = userId;
+    users[userId]['email'] = email;
+    users[userId]['password'] = password;
+    console.log(users);
+    res.cookie('user_id', userId);
+
+    res.redirect('/');
+})
+
 app.post('/login', (req, res) => {
     let username = req.body.username;
+    console.log(username)
     res.cookie('username', username);
     res.redirect('/')
 });
 
 app.post('/logout', (req, res) => {
-    res.cookie('username','');
+    res.cookie('user_id', '');
     res.redirect('/');
 })
 
@@ -60,10 +103,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
     const id = req.params.shortURL;
-    console.log(id);
-    const tempVars = { shortURL: id, longURL: urlDatabase[id] };
-    console.log(tempVars);
-    res.render('urls_show', tempVars);
+    res.render('urls_show', { shortURL: id, longURL: urlDatabase[id] });
 });
 
 app.post('/urls/:shortURL', (req, res) => {
@@ -80,8 +120,7 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-
-
+//todo generate unique id
 function generateRandomString() {
     let arr = [];
     let ans = '';
