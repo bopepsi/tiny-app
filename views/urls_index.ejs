@@ -14,20 +14,38 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/index.css" />
     <title>TinyApp</title>
   </head>
   <body>
     <%- include('./partials/_header') %>
     <main style="margin: 1em">
+      <% if(!locals.isAuth){ %>
+      <section class="promp">
+        <h3>
+          <a href="/login"><button>Login here</button></a> to unlock more
+          features...
+        </h3>
+      </section>
+      <% }else{ %> <% if(Object.keys(urls).length === 0) { %>
+      <section class="promp">
+        <h3>
+          <a href="/urls/new"><button>Click me</button></a>to create your own
+          TinyURL
+        </h3>
+      </section>
+      <% } else{ %>
       <h3>My URLs</h3>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">Short URL</th>
             <th scope="col">Long URL</th>
+            <th scope="col">View</th>
+            <% if(locals.isAuth){ %>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
+            <% } %>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +55,12 @@
             <td><%= urls[url] %></td>
             <form method="GET" action="/urls/<%=url%>/">
               <td>
+                <button class="view" type="submit">View</button>
+              </td>
+            </form>
+            <% if(locals.isAuth){ %>
+            <form method="GET" action="/urls/<%=url%>/edit">
+              <td>
                 <button class="edit" type="submit">Edit</button>
               </td>
             </form>
@@ -45,10 +69,12 @@
                 <button class="delete" type="submit">Delete</button>
               </td>
             </form>
+            <% } %>
           </tr>
           <% } %>
         </tbody>
       </table>
+      <% }} %>
     </main>
     <!-- Bootstrap JS -->
     <script

@@ -37,6 +37,18 @@ button.delete:hover{
     border-color: transparent;
 }
 
+button.view{
+    background-color: transparent;
+    color: rgb(0, 123, 255);
+    border-color: rgb(0, 123, 255);
+}
+
+button.view:hover{
+    background-color: rgb(0, 123, 255);
+    color: whitesmoke;
+    border-color: transparent;
+}
+
 button{
     color:rgb(67, 130, 60);
     cursor: pointer;
@@ -55,4 +67,23 @@ button:focus{
 .my-width{
     width: 50%;
     margin: 0 auto;
+}
+
+.promp{
+    margin: 20vh auto;
+}
+
+.promp h3{
+    color: rgb(70, 70, 70);
+    text-align: center;
+    margin: 0;
+}
+
+.promp a{
+    text-align: center;
+}
+
+.err-msg{
+    margin: 0;
+    color: rgb(255, 120, 120);
 }

@@ -8,8 +8,8 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/index.css" />
     <title>URL - TinyApp Example</title>
+    <link rel="stylesheet" href="/index.css">
   </head>
 
   <body>
@@ -17,25 +17,10 @@
     <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
-        <h2 class="card-title">Login</h2>
-        <form method="POST" action="/login">
-          <div>
-            <label class="card-text" for="email">Email</label>
-            <input class="form-control my-width" type="email" name="email" value="<%=locals.originEmail%>"/>
-            <label class="card-text" for="password">Password</label>
-            <input
-              class="form-control my-width"
-              type="password"
-              name="password"
-            />
-          </div>
-          <% if(locals.msg) {%>
-          <hr />
-          <p class="err-msg"><%=msg%></p>
-          <% } %>
-          <hr />
-          <button type="submit">Login</button>
-        </form>
+        <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+        <p class="card-text">
+          Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a>
+        </p>
       </div>
       <div class="card-footer text-muted"></div>
     </div>
