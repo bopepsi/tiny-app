@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -15,41 +9,28 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/index.css">
-    <title>TinyApp</title>
+    <title>URL - TinyApp Example</title>
   </head>
+
   <body>
     <%- include('./partials/_header') %>
-    <main style="margin: 1em">
-      <h3>My URLs</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Short URL</th>
-            <th scope="col">Long URL</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for(let url in urls) { %>
-          <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
-            <form method="GET" action="/urls/<%=url%>/">
-              <td>
-                <button class="edit" type="submit">Edit</button>
-              </td>
-            </form>
-            <form method="POST" action="/urls/<%=url%>/delete">
-              <td>
-                <button class="delete" type="submit">Delete</button>
-              </td>
-            </form>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
-    </main>
+    <div class="card text-center">
+      <div class="card-header"></div>
+      <div class="card-body">
+        <h2 class="card-title">Login</h2>
+        <form method="POST" action="/login">
+          <div>
+            <label class="card-text" for="email">Email</label>
+            <input class="form-control my-width" type="email" name="email"  />
+            <label class="card-text" for="password">Password</label>
+            <input class="form-control my-width" type="password" name="password"  />
+          </div>
+          <hr>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted"></div>
+    </div>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

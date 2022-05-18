@@ -21,9 +21,6 @@ app.use(cookieParser());
 
 //todo set cookies into res.locals
 app.use((req, res, next) => {
-    if (req.cookies['username'] !== '' || !req.cookies['username']) {
-        res.locals.username = req.cookies['username'];
-    };
     if (req.cookies['user_id'] !== '' || !req.cookies['user_id']) {
         for (let key in users) {
             if (key === req.cookies['user_id']) {
@@ -55,9 +52,8 @@ app.post('/register', (req, res, next) => {
         return res.redirect('/400');
     };
     for (var key in users) {
-        console.log('infor', users[key])
         if (users[key]['email'] === email) {
-            console.log('matches email')
+            console.log('email already exist')
             return res.redirect('/400');
         }
     };
@@ -72,12 +68,24 @@ app.post('/register', (req, res, next) => {
     res.redirect('/');
 })
 
+app.get('/login', (req, res) => {
+    res.render('user_login');
+})
+
 app.post('/login', (req, res) => {
-    let username = req.body.username;
-    console.log(username)
-    res.cookie('username', username);
-    res.redirect('/')
-});
+    const { email, password } = req.body;
+    for (var key in users) {
+        if (users[key]['email'] === email) {
+            if (users[key]['password'] === password) {
+                console.log('login info matches')
+                let user_id = key;
+                res.cookie('user_id', user_id);
+                return res.redirect('/');
+            }
+        }
+    };
+    return res.redirect('/login');
+})
 
 app.post('/logout', (req, res) => {
     res.clearCookie('user_id');
@@ -85,8 +93,7 @@ app.post('/logout', (req, res) => {
 })
 
 app.get('/urls', (req, res) => {
-    const name = req.cookies["username"];
-    res.render('urls_index', { urls: urlDatabase, username: name });
+    res.render('urls_index', { urls: urlDatabase});
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {

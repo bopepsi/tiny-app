@@ -16,10 +16,13 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+      </div>
+      <div class="navbar-nav">
         <% if(locals.useremail===''||!locals.useremail){ %>
         <a class="nav-item nav-link" href="/register">Sign Up</a>
         <% } %> <% if(locals.useremail===''||!locals.useremail){ %>
-        <form class="nav-item nav-link" method="POST" action="/login">
+        <a class="nav-item nav-link" href="/login">Login</a>
+        <!-- <form class="nav-item nav-link" method="POST" action="/login">
           <input
             type="text"
             name="username"
@@ -27,7 +30,7 @@
             placeholder="enter username"
           />
           <button type="submit">Login</button>
-        </form>
+        </form> -->
         <% }else{ %>
         <p class="nav-item nav-link">Logged in as <%=locals['useremail']%></p>
         <form class="nav-item nav-link" method="POST" action="/logout">
