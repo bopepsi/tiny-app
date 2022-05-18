@@ -19,6 +19,7 @@
   </head>
   <body>
     <%- include('./partials/_header') %>
+    <div class="card-header"></div>
     <main style="margin: 1em">
       <% if(!locals.isAuth){ %>
       <section class="promp">
@@ -74,6 +75,7 @@
           <% } %>
         </tbody>
       </table>
+      <hr>
       <% }} %>
     </main>
     <!-- Bootstrap JS -->

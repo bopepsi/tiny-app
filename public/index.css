@@ -1,3 +1,11 @@
+html,body{
+    height: 100vh;
+}
+
+hr{
+    margin: 2rem;
+}
+
 .err-msg{
     color: grey;
     text-align: center;
@@ -67,6 +75,7 @@ button:focus{
 .my-width{
     width: 50%;
     margin: 0 auto;
+    margin-block-end: 1rem;
 }
 
 .promp{
