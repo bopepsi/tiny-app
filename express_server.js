@@ -8,7 +8,7 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
 
-const path = require('path')
+const path = require('path');
 const app = express();
 const port = 8080;
 
@@ -23,7 +23,7 @@ app.use(cookieSession({
     name: 'session',
     keys: ['key1', 'key2'],
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 
 //todo set cookies/sessionCookie into res.locals
 app.use((req, res, next) => {
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
         }
     }
     next();
-})
+});
 
 app.get("/", (req, res) => {
     res.redirect('/urls');
@@ -48,7 +48,7 @@ app.get("/urls.json", (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render('user_registration');
-})
+});
 
 app.post('/register', (req, res, next) => {
     const email = req.body.email;
@@ -73,11 +73,11 @@ app.post('/register', (req, res, next) => {
     // res.cookie('user_id', userId);
 
     res.redirect('/');
-})
+});
 
 app.get('/login', (req, res) => {
     res.render('user_login');
-})
+});
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
@@ -99,13 +99,13 @@ app.post('/login', (req, res) => {
 
     const warning = 'user doesn\'t exisit';
     return res.render('user_login', { msg: warning, originEmail: email });
-})
+});
 
 app.post('/logout', (req, res) => {
     req.session = null;
     // res.clearCookie('user_id');
     res.redirect('/');
-})
+});
 
 app.get('/urls', (req, res) => {
     const userId = req.session['user_id'];
@@ -126,7 +126,7 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
     const url = req.params.shortURL;
     delete urlDatabase[`${url}`];
     res.redirect('/urls');
-})
+});
 
 app.post('/urls', (req, res) => {
     const longURL = req.body.longURL;
@@ -192,7 +192,7 @@ app.post('/urls/:shortURL', (req, res) => {
     }
     urlDatabase[req.params.shortURL] = req.body.newURL;
     res.redirect('/');
-})
+});
 
 app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
@@ -205,7 +205,7 @@ app.get("/hello", (req, res) => {
 
 app.get('/400', (req, res) => {
     res.status(400).render('400');
-})
+});
 
 console.log(users);
 
@@ -227,8 +227,8 @@ function generateRandomString() {
         ans += arr[charIdx];
     };
     return ans;
-}
+};
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}!`);
-})
+});
