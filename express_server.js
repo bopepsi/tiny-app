@@ -1,6 +1,7 @@
 const urlDatabase = require('./model/urlDatabase');
 const users = require('./model/user');
 const tracker = require('./model/tracker');
+const signupChecker = require('./helper/signup_check')
 
 const express = require('express');
 // const cookieParser = require('cookie-parser');
@@ -50,29 +51,20 @@ app.get('/register', (req, res) => {
     res.render('user_registration');
 });
 
-app.post('/register', (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
+app.post('/register', (req, res) => {
+    const { email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
-    if (!email || !password) {
-        return res.redirect('/400');
-    };
-    for (var key in users) {
-        if (users[key]['email'] === email) {
-            console.log('email already exist')
-            return res.redirect('/400');
-        }
-    };
+    let msg = signupChecker(email, password);
+    if(msg){
+        return res.render('user_registration', { warning: msg })
+    }
     let userId = generateRandomString();
     users[userId] = {};
     users[userId]['id'] = userId;
     users[userId]['email'] = email;
     users[userId]['password'] = hashedPassword;
-    // console.log(users);
     req.session.user_id = userId;
-    // res.cookie('user_id', userId);
-
-    res.redirect('/');
+    return res.redirect('/');
 });
 
 app.get('/login', (req, res) => {
@@ -87,7 +79,6 @@ app.post('/login', (req, res) => {
             if (passwordCorrect) {
                 console.log('login info matches')
                 let user_id = key;
-                // res.cookie('user_id', user_id);
                 req.session.user_id = user_id;
                 return res.redirect('/');
             } else {
@@ -150,6 +141,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
+    if (!urlDatabase[req.params.shortURL]) {
+        return res.render('404');
+    };
     const id = req.params.shortURL;
     if (tracker[id]) {
         tracker[id] = { ...tracker[id] }
@@ -192,12 +186,15 @@ app.get('/urls/:shortURL/edit', (req, res) => {
 app.post('/urls/:shortURL', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
-    }
+    };
     urlDatabase[req.params.shortURL] = req.body.newURL;
     res.redirect('/');
 });
 
 app.get("/u/:shortURL", (req, res) => {
+    if (!urlDatabase[req.params.shortURL]) {
+        return res.render('404');
+    }
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
     res.redirect(longURL);
 });
@@ -210,7 +207,10 @@ app.get('/400', (req, res) => {
     res.status(400).render('400');
 });
 
-// console.log(users);
+//todo handle 404 errors
+app.use((req, res) => {
+    res.status(404).render('404');
+})
 
 //todo generate unique id
 function generateRandomString() {

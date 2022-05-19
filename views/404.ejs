@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -8,36 +14,14 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/index.css" />
-    <title>URL - TinyApp Example</title>
+    <link rel="stylesheet" href="/index.css">
+    <title>400 Error</title>
   </head>
-
   <body>
     <%- include('./partials/_header') %>
-    <div class="text-center">
-      <div class="card-header"></div>
-      <div class="card-body">
-        <h2 class="card-title">Sign up</h2>
-        <form method="POST" action="/register">
-          <div>
-            <label class="card-text" for="email">Email</label>
-            <input class="form-control my-width" type="email" name="email" />
-            <label class="card-text" for="password">Password</label>
-            <input
-              class="form-control my-width"
-              type="password"
-              name="password"
-            />
-          </div>
-          <% if(locals.warning) {%>
-          <hr />
-          <p class="err-msg"><%=warning%></p>
-          <% } %>
-          <hr />
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-    </div>
+    <main style="margin: 1em">
+      <h1 class="err-msg">404 Page Not Found</h1>
+    </main>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
