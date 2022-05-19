@@ -1,21 +1,13 @@
-const urlDatabase = {
-    "b2xVn2": {
-        longURL: "http://www.lighthouselabs.ca",
-        userId: 'bplmrg'
-    },
-    "9sm5xK": {
-        longURL: "http://www.google.com",
-        userId: 'bplmrg'
-    },
-};
-
-const users = {
-    bplmrg: { id: 'bplmrg', email: 'bopepsi@gmail.com', password: '1111' },
-    manman: { id: 'manman', email: 'offline@gmail.com', password: '1111' },
-};
+const urlDatabase = require('./model/urlDatabase');
+const users = require('./model/user');
+const tracker = require('./model/tracker');
 
 const express = require('express');
-var cookieParser = require('cookie-parser')
+// const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const bcrypt = require('bcryptjs');
+const methodOverride = require('method-override');
+
 const path = require('path')
 const app = express();
 const port = 8080;
@@ -24,14 +16,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
+app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
+app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2'],
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
-//todo set cookies into res.locals
+//todo set cookies/sessionCookie into res.locals
 app.use((req, res, next) => {
-    if (req.cookies['user_id'] !== '' || !req.cookies['user_id']) {
+    if (req.session['user_id'] !== '' || !req.session['user_id']) {
         for (let key in users) {
-            if (key === req.cookies['user_id']) {
+            if (key === req.session['user_id']) {
                 res.locals.useremail = users[key]['email'];
                 res.locals.isAuth = true;
             };
@@ -55,6 +53,7 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
     if (!email || !password) {
         return res.redirect('/400');
     };
@@ -68,9 +67,10 @@ app.post('/register', (req, res, next) => {
     users[userId] = {};
     users[userId]['id'] = userId;
     users[userId]['email'] = email;
-    users[userId]['password'] = password;
+    users[userId]['password'] = hashedPassword;
     console.log(users);
-    res.cookie('user_id', userId);
+    req.session.user_id = userId;
+    // res.cookie('user_id', userId);
 
     res.redirect('/');
 })
@@ -83,10 +83,12 @@ app.post('/login', (req, res) => {
     const { email, password } = req.body;
     for (var key in users) {
         if (users[key]['email'] === email) {
-            if (users[key]['password'] === password) {
+            const passwordCorrect = bcrypt.compareSync(password, users[key]['password'])
+            if (passwordCorrect) {
                 console.log('login info matches')
                 let user_id = key;
-                res.cookie('user_id', user_id);
+                // res.cookie('user_id', user_id);
+                req.session.user_id = user_id;
                 return res.redirect('/');
             } else {
                 const warning = 'please check your credentials';
@@ -94,18 +96,19 @@ app.post('/login', (req, res) => {
             }
         }
     };
-    
+
     const warning = 'user doesn\'t exisit';
     return res.render('user_login', { msg: warning, originEmail: email });
 })
 
 app.post('/logout', (req, res) => {
-    res.clearCookie('user_id');
+    req.session = null;
+    // res.clearCookie('user_id');
     res.redirect('/');
 })
 
 app.get('/urls', (req, res) => {
-    const userId = req.cookies['user_id'];
+    const userId = req.session['user_id'];
     let userURLs = {};
     for (let key in urlDatabase) {
         if (urlDatabase[key]['userId'] === userId) {
@@ -115,12 +118,12 @@ app.get('/urls', (req, res) => {
     res.render('urls_index', { urls: userURLs });
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+//todo  -   Override method
+app.delete('/urls/:shortURL/delete', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
     }
     const url = req.params.shortURL;
-    console.log(url);
     delete urlDatabase[`${url}`];
     res.redirect('/urls');
 })
@@ -128,7 +131,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.post('/urls', (req, res) => {
     const longURL = req.body.longURL;
     let str = generateRandomString();
-    const userId = req.cookies['user_id'];
+    const userId = req.session['user_id'];
     urlDatabase[`${str}`] = {
         longURL: longURL,
         userId: userId
@@ -145,6 +148,23 @@ app.get("/urls/new", (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
     const id = req.params.shortURL;
+    if (tracker[id]) {
+        tracker[id] = { ...tracker[id] }
+    } else {
+        tracker[id] = {};
+    }
+
+    tracker[id]['counter'] = (tracker[id]['counter'] ? tracker[id]['counter'] : 0) + 1;
+    tracker[id]['uniqueVisit'] = 1;
+    if (req.session.user_id) {
+        tracker[id]['users'] = [...(tracker[id]['users'] ? tracker[id]['users'] : [])];
+        tracker[id]['users'].push({ user: req.session.user_id, timestamp: new Date().toDateString() });
+
+    } else {
+        tracker[id]['users'] = [...(tracker[id]['users'] ? tracker[id]['users'] : [])];
+        req.session.temp_id = generateRandomString();
+        tracker[id]['users'].push({ user: req.session.temp_id, timestamp: new Date().toDateString() });
+    }
     res.render('urls_detail', { shortURL: id, longURL: urlDatabase[id]['longURL'] });
 });
 
@@ -152,8 +172,18 @@ app.get('/urls/:shortURL/edit', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
     }
+    const counter = tracker[req.params.shortURL]['counter'];
+    const users = tracker[req.params.shortURL]['users'];
+    let uniqueVisit = 0;
+    let helper = [];
+    for (let item of users) {
+        if (!helper.includes(item['user'])) {
+            helper.push(item['user']);
+            uniqueVisit++;
+        }
+    }
     const id = req.params.shortURL;
-    res.render('urls_show', { shortURL: id, longURL: urlDatabase[id]['longURL'] });
+    res.render('urls_show', { shortURL: id, longURL: urlDatabase[id]['longURL'], visitCount: counter, visitors: users, uniqueVisitCount: uniqueVisit });
 });
 
 app.post('/urls/:shortURL', (req, res) => {

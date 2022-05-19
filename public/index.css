@@ -1,98 +1,116 @@
-html,body{
-    height: 100vh;
+html,
+body {
+  height: 100vh;
 }
 
-hr{
-    margin: 2rem;
+hr {
+  margin: 1rem;
 }
 
-.err-msg{
-    color: grey;
-    text-align: center;
-    margin-block-start: 5rem;
+h5 {
+  margin: 0.5rem;
+  color: rgb(80, 80, 80);
 }
 
-p{
-    margin: 0;
-    align-self: center;
-}
-
-#navbarNavAltMarkup{
-    justify-content: space-between;
-}
-
-button.edit{
-    background-color: transparent;
-    color: orange;
-    border-color: orange;
-}
-
-button.edit:hover{
-    background-color: orange;
-    color: whitesmoke;
-    border-color: transparent;
-}
-
-button.delete{
-    background-color: transparent;
-    color: red;
-    border-color: red;
-}
-
-button.delete:hover{
-    background-color: red;
-    color: whitesmoke;
-    border-color: transparent;
-}
-
-button.view{
-    background-color: transparent;
-    color: rgb(0, 123, 255);
-    border-color: rgb(0, 123, 255);
-}
-
-button.view:hover{
-    background-color: rgb(0, 123, 255);
-    color: whitesmoke;
-    border-color: transparent;
-}
-
-button{
-    color:rgb(67, 130, 60);
-    cursor: pointer;
-    border-radius: 4px;
-    background-color: whitesmoke;
-    border-color: transparent;
-}
-button:hover{
+.attention {
+    background-color: #28a745;
     color: white;
-    background-color: gray;
-}
-button:focus{
-    outline: none;
-}
-
-.my-width{
-    width: 50%;
-    margin: 0 auto;
-    margin-block-end: 1rem;
+    border-radius: 5px;
+    width: auto;
+    padding: 0.5rem;
 }
 
-.promp{
-    margin: 20vh auto;
+.err-msg {
+  color: grey;
+  text-align: center;
+  margin-block-start: 5rem;
 }
 
-.promp h3{
-    color: rgb(70, 70, 70);
-    text-align: center;
-    margin: 0;
+p {
+  margin: 0;
+  align-self: center;
 }
 
-.promp a{
-    text-align: center;
+.margin-bot-1rem {
+  margin-block-end: 1rem;
 }
 
-.err-msg{
-    margin: 0;
-    color: rgb(255, 120, 120);
+#navbarNavAltMarkup {
+  justify-content: space-between;
+}
+
+button.edit {
+  background-color: transparent;
+  color: orange;
+  border-color: orange;
+}
+
+button.edit:hover {
+  background-color: orange;
+  color: whitesmoke;
+  border-color: transparent;
+}
+
+button.delete {
+  background-color: transparent;
+  color: red;
+  border-color: red;
+}
+
+button.delete:hover {
+  background-color: red;
+  color: whitesmoke;
+  border-color: transparent;
+}
+
+button.view {
+  background-color: transparent;
+  color: rgb(0, 123, 255);
+  border-color: rgb(0, 123, 255);
+}
+
+button.view:hover {
+  background-color: rgb(0, 123, 255);
+  color: whitesmoke;
+  border-color: transparent;
+}
+
+button {
+  color: rgb(67, 130, 60);
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: whitesmoke;
+  border-color: transparent;
+}
+button:hover {
+  color: white;
+  background-color: gray;
+}
+button:focus {
+  outline: none;
+}
+
+.my-width {
+  width: 50%;
+  margin: 0 auto;
+  margin-block-end: 1rem;
+}
+
+.promp {
+  margin: 20vh auto;
+}
+
+.promp h3 {
+  color: rgb(70, 70, 70);
+  text-align: center;
+  margin: 0;
+}
+
+.promp a {
+  text-align: center;
+}
+
+.err-msg {
+  margin: 0;
+  color: rgb(255, 120, 120);
 }

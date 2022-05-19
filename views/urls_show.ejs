@@ -33,6 +33,31 @@
           </form>
         </p>
       </div>
+      <div class="card-body">
+        <h5>Total Visits</h5>
+        <p class="margin-bot-1rem"><em class="attention"><%= visitCount %></em></p>
+        <h5>Unique Visits</h5>
+        <p class="margin-bot-1rem"><em class="attention"><%= uniqueVisitCount %></em></p>
+
+        
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Visitors</th>
+            <th scope="col">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let item of visitors) { %>
+          <tr>
+            <td><em class="attention"><%= item['user'] %></em></td>
+            <td><em class="attention"><%= item['timestamp'] %></em></td>
+          </tr>
+          <% } %>
+        </tbody>
+        </table>
+
+      </div>
       
     </div>
     <!-- Bootstrap JS -->

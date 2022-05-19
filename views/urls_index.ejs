@@ -31,7 +31,7 @@
       <% }else{ %> <% if(Object.keys(urls).length === 0) { %>
       <section class="promp">
         <h3>
-          <a href="/urls/new"><button>Click me</button></a>to create your own
+          <a href="/urls/new"><button>Click me</button></a> to create your own
           TinyURL
         </h3>
       </section>
@@ -65,7 +65,7 @@
                 <button class="edit" type="submit">Edit</button>
               </td>
             </form>
-            <form method="POST" action="/urls/<%=url%>/delete">
+            <form method="POST" action="/urls/<%=url%>/delete?_method=DELETE">
               <td>
                 <button class="delete" type="submit">Delete</button>
               </td>
