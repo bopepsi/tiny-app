@@ -129,6 +129,9 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
+    if (!res.locals.isAuth) {
+        return res.redirect('/login');
+    }
     const longURL = req.body.longURL;
     let str = generateRandomString();
     const userId = req.session['user_id'];
