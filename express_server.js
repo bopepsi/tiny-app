@@ -68,7 +68,7 @@ app.post('/register', (req, res, next) => {
     users[userId]['id'] = userId;
     users[userId]['email'] = email;
     users[userId]['password'] = hashedPassword;
-    console.log(users);
+    // console.log(users);
     req.session.user_id = userId;
     // res.cookie('user_id', userId);
 
@@ -207,7 +207,7 @@ app.get('/400', (req, res) => {
     res.status(400).render('400');
 });
 
-console.log(users);
+// console.log(users);
 
 //todo generate unique id
 function generateRandomString() {
