@@ -3,19 +3,19 @@ const users = require('./model/user');
 const tracker = require('./model/tracker');
 const { signupChecker, uniqueVisitCounter, initTracker, updateTracker, registerUser } = require('./helper/main');
 const generateRandomString = require('./helper/generateId');
-
+//? Packages Required
 const express = require('express');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
-
 const path = require('path');
+
 const app = express();
 const port = 8080;
-
+//? Set up ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
+//? Middlewares
 app.use(express.static('public'));
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
@@ -182,10 +182,6 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
-app.get('/400', (req, res) => {
-    res.status(400).render('400');
 });
 
 //todo  -   page does not exist here ==> handle 404 errors.
