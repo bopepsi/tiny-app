@@ -3,9 +3,7 @@ const tracker = require('../model/tracker');
 const generateId = require('./generateId');
 
 const signupChecker = (email, password) => {
-
     let msg;
-
     if (!email || !password) {
         msg = 'email or password cannot be empty'
     };
@@ -14,9 +12,7 @@ const signupChecker = (email, password) => {
             msg = 'user already exist'
         }
     };
-
     return msg;
-
 }
 
 const initTracker = (str) => {
