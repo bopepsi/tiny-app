@@ -76,7 +76,6 @@ app.post('/login', (req, res) => {
         if (users[key]['email'] === email) {
             const passwordCorrect = bcrypt.compareSync(password, users[key]['password'])
             if (passwordCorrect) {
-                console.log('login info matches')
                 let user_id = key;
                 req.session.user_id = user_id;
                 return res.redirect('/');
@@ -141,13 +140,17 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-    if (!urlDatabase[req.params.shortURL]) {
+    const id = req.params.shortURL;
+    if (!urlDatabase[id]) {
         return res.render('404');
     };
     if (!res.locals.isAuth) {
-        return res.render('401');
+        return res.render('401_notauthenticated');
     };
-    const id = req.params.shortURL;
+    const user_id = req.session['user_id'];
+    if (urlDatabase[id]['userId'] !== user_id) {
+        return res.render('401_notauthorized');
+    };
     res.render('urls_detail', { shortURL: id, longURL: urlDatabase[id]['longURL'] });
 });
 
