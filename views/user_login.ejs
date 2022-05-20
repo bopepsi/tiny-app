@@ -14,19 +14,26 @@
 
   <body>
     <%- include('./partials/_header') %>
-    <div class=" text-center">
+    <div class="text-center">
       <div class="card-header"></div>
       <div class="card-body">
         <h2 class="card-title">Login</h2>
         <form method="POST" action="/login">
           <div>
             <label class="card-text" for="email">Email</label>
-            <input class="form-control my-width" type="email" name="email" value="<%=locals.originEmail%>"/>
+            <input
+              class="form-control my-width"
+              type="email"
+              name="email"
+              value="<%=locals.originEmail%>"
+              required
+            />
             <label class="card-text" for="password">Password</label>
             <input
               class="form-control my-width"
               type="password"
               name="password"
+              required
             />
           </div>
           <% if(locals.msg) {%>
