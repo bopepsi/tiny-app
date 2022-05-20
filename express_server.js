@@ -5,7 +5,6 @@ const { signupChecker, uniqueVisitCounter, initTracker, updateTracker } = requir
 const generateRandomString = require('./helper/generateId');
 
 const express = require('express');
-// const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
@@ -20,7 +19,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
 app.use(cookieSession({
     name: 'session',
     keys: ['key1', 'key2'],
@@ -110,7 +108,7 @@ app.get('/urls', (req, res) => {
     res.render('urls_index', { urls: userURLs });
 });
 
-//todo  -   Override method
+//todo  -   Override http method
 app.delete('/urls/:shortURL/delete', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
@@ -154,11 +152,9 @@ app.get('/urls/:shortURL/edit', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
     }
-    const { newURL } = req.body;
-    const counter = tracker[req.params.shortURL]['counter'];
-    const users = tracker[req.params.shortURL]['users'];
-    let uniqueVisit = uniqueVisitCounter(req.params.shortURL);
     const id = req.params.shortURL;
+    const { counter, users } = tracker[id];
+    let uniqueVisit = uniqueVisitCounter(id);
     res.render('urls_show', { shortURL: id, longURL: urlDatabase[id]['longURL'], visitCount: counter, visitors: users, uniqueVisitCount: uniqueVisit });
 });
 
@@ -166,7 +162,8 @@ app.post('/urls/:shortURL', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
     };
-    urlDatabase[req.params.shortURL] = req.body.newURL;
+    const { newURL } = req.body;
+    urlDatabase[req.params.shortURL]['longURL'] = newURL;
     res.redirect('/');
 });
 
@@ -188,12 +185,10 @@ app.get('/400', (req, res) => {
     res.status(400).render('400');
 });
 
-//todo handle 404 errors
+//todo  -   handle 404 errors
 app.use((req, res) => {
     res.status(404).render('404');
 })
-
-console.log(tracker)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}!`);
