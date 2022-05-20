@@ -1,7 +1,8 @@
 const urlDatabase = require('./model/urlDatabase');
 const users = require('./model/user');
 const tracker = require('./model/tracker');
-const signupChecker = require('./helper/signup_check')
+const { signupChecker, uniqueVisitCounter, initTracker, updateTracker } = require('./helper/main');
+const generateRandomString = require('./helper/generateId');
 
 const express = require('express');
 // const cookieParser = require('cookie-parser');
@@ -55,7 +56,7 @@ app.post('/register', (req, res) => {
     const { email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
     let msg = signupChecker(email, password);
-    if(msg){
+    if (msg) {
         return res.render('user_registration', { warning: msg })
     }
     let userId = generateRandomString();
@@ -130,7 +131,8 @@ app.post('/urls', (req, res) => {
         longURL: longURL,
         userId: userId
     }
-    res.redirect(`/urls/`);
+    initTracker(str);
+    res.redirect(`/urls`);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -145,23 +147,6 @@ app.get('/urls/:shortURL', (req, res) => {
         return res.render('404');
     };
     const id = req.params.shortURL;
-    if (tracker[id]) {
-        tracker[id] = { ...tracker[id] }
-    } else {
-        tracker[id] = {};
-    }
-
-    tracker[id]['counter'] = (tracker[id]['counter'] ? tracker[id]['counter'] : 0) + 1;
-    tracker[id]['uniqueVisit'] = 1;
-    if (req.session.user_id) {
-        tracker[id]['users'] = [...(tracker[id]['users'] ? tracker[id]['users'] : [])];
-        tracker[id]['users'].push({ user: req.session.user_id, timestamp: new Date().toDateString() });
-
-    } else {
-        tracker[id]['users'] = [...(tracker[id]['users'] ? tracker[id]['users'] : [])];
-        req.session.temp_id = generateRandomString();
-        tracker[id]['users'].push({ user: req.session.temp_id, timestamp: new Date().toDateString() });
-    }
     res.render('urls_detail', { shortURL: id, longURL: urlDatabase[id]['longURL'] });
 });
 
@@ -169,16 +154,10 @@ app.get('/urls/:shortURL/edit', (req, res) => {
     if (!res.locals.isAuth) {
         return res.redirect('/login');
     }
+    const { newURL } = req.body;
     const counter = tracker[req.params.shortURL]['counter'];
     const users = tracker[req.params.shortURL]['users'];
-    let uniqueVisit = 0;
-    let helper = [];
-    for (let item of users) {
-        if (!helper.includes(item['user'])) {
-            helper.push(item['user']);
-            uniqueVisit++;
-        }
-    }
+    let uniqueVisit = uniqueVisitCounter(req.params.shortURL);
     const id = req.params.shortURL;
     res.render('urls_show', { shortURL: id, longURL: urlDatabase[id]['longURL'], visitCount: counter, visitors: users, uniqueVisitCount: uniqueVisit });
 });
@@ -193,8 +172,10 @@ app.post('/urls/:shortURL', (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
     if (!urlDatabase[req.params.shortURL]) {
-        return res.render('404');
+        return res.render('urls_error');
     }
+    const id = req.params.shortURL;
+    updateTracker(req, id);
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
     res.redirect(longURL);
 });
@@ -212,25 +193,7 @@ app.use((req, res) => {
     res.status(404).render('404');
 })
 
-//todo generate unique id
-function generateRandomString() {
-    let arr = [];
-    let ans = '';
-    for (let i = 65; i <= 90; i++) {
-        arr.push(String.fromCharCode(i));
-    };
-    for (let i = 97; i <= 122; i++) {
-        arr.push(String.fromCharCode(i));
-    };
-    for (let i = 48; i <= 57; i++) {
-        arr.push(String.fromCharCode(i));
-    };
-    for (let i = 0; i < 6; i++) {
-        let charIdx = Math.floor(Math.random() * arr.length);
-        ans += arr[charIdx];
-    };
-    return ans;
-};
+console.log(tracker)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}!`);
