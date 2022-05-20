@@ -144,6 +144,9 @@ app.get('/urls/:shortURL', (req, res) => {
     if (!urlDatabase[req.params.shortURL]) {
         return res.render('404');
     };
+    if (!res.locals.isAuth) {
+        return res.render('401');
+    };
     const id = req.params.shortURL;
     res.render('urls_detail', { shortURL: id, longURL: urlDatabase[id]['longURL'] });
 });
