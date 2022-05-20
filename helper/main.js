@@ -2,6 +2,8 @@ const users = require('../model/user');
 const tracker = require('../model/tracker');
 const generateId = require('./generateId');
 
+//? check if user exists, email and password cannot be null
+//? return proper message if either one of them occur
 const signupChecker = (email, password) => {
     let msg;
     if (!email || !password) {
@@ -15,12 +17,14 @@ const signupChecker = (email, password) => {
     return msg;
 }
 
+//? initialize a tracker object for that shortURL when it was created.
 const initTracker = (str) => {
     tracker[str] = {};
     tracker[str]['users'] = [];
     tracker[str]['counter'] = 0;
 }
 
+//? updateTracker object for that particular shortURL when people use it.
 const updateTracker = (req,id) => {
     tracker[id]['counter'] = (tracker[id]['counter'] ? tracker[id]['counter'] : 0) + 1;
     tracker[id]['uniqueVisit'] = 1;

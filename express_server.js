@@ -185,7 +185,7 @@ app.get('/400', (req, res) => {
     res.status(400).render('400');
 });
 
-//todo  -   handle 404 errors
+//todo  -   page does not exist here ==> handle 404 errors.
 app.use((req, res) => {
     res.status(404).render('404');
 })
