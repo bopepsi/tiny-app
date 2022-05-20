@@ -1,7 +1,7 @@
 const urlDatabase = require('./model/urlDatabase');
 const users = require('./model/user');
 const tracker = require('./model/tracker');
-const { signupChecker, uniqueVisitCounter, initTracker, updateTracker } = require('./helper/main');
+const { signupChecker, uniqueVisitCounter, initTracker, updateTracker, registerUser } = require('./helper/main');
 const generateRandomString = require('./helper/generateId');
 
 const express = require('express');
@@ -58,10 +58,7 @@ app.post('/register', (req, res) => {
         return res.render('user_registration', { warning: msg })
     }
     let userId = generateRandomString();
-    users[userId] = {};
-    users[userId]['id'] = userId;
-    users[userId]['email'] = email;
-    users[userId]['password'] = hashedPassword;
+    registerUser(userId);
     req.session.user_id = userId;
     return res.redirect('/');
 });

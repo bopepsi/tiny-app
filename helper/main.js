@@ -52,9 +52,17 @@ const uniqueVisitCounter = (id) => {
     return uniqueVisit;
 }
 
+const registerUser = (userId)=>{
+    users[userId] = {};
+    users[userId]['id'] = userId;
+    users[userId]['email'] = email;
+    users[userId]['password'] = hashedPassword;
+}
+
 module.exports = {
     signupChecker,
     uniqueVisitCounter,
     initTracker,
-    updateTracker
+    updateTracker,
+    registerUser
 };
