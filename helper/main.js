@@ -52,7 +52,7 @@ const uniqueVisitCounter = (id) => {
     return uniqueVisit;
 }
 
-const registerUser = (userId)=>{
+const registerUser = (userId,email,hashedPassword)=>{
     users[userId] = {};
     users[userId]['id'] = userId;
     users[userId]['email'] = email;

@@ -58,7 +58,7 @@ app.post('/register', (req, res) => {
         return res.render('user_registration', { warning: msg })
     }
     let userId = generateRandomString();
-    registerUser(userId);
+    registerUser(userId,email,hashedPassword);
     req.session.user_id = userId;
     return res.redirect('/');
 });
@@ -126,7 +126,7 @@ app.post('/urls', (req, res) => {
         userId: userId
     }
     initTracker(str);
-    res.redirect(`/urls`);
+    res.redirect(`/urls/${str}`);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -184,7 +184,7 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-//todo  -   page does not exist here ==> handle 404 errors.
+// //todo  -   page does not exist here ==> handle 404 errors.
 app.use((req, res) => {
     res.status(404).render('404');
 })
